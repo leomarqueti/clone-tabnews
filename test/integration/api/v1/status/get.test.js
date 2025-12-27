@@ -1,10 +1,18 @@
-
-
 test("GET to /api/v1/status should return 200", async () => {
-
-
-
-  // precisamos colocar await pois pedimos para o teste esperar um pouco ate a pagina carregar , damos uma promise , uma promessa que jaja chega, entao criamos uma funçao async para que tudo funcione e quando der o a responsa a variavel vai receber no response.status o 200
   const response = await fetch("http://localhost:3000/api/v1/status/");
   expect(response.status).toBe(200);
+
+  const responseBody = await response.json();
+  console.log(responseBody.dependencies.database);
+  expect(responseBody.update_at).toBeDefined();
+  expect(responseBody.dependencies.database.version).toBeDefined();
+  expect(responseBody.dependencies.database.max_connections).toBeDefined();
+  expect(responseBody.dependencies.database.opened_connections).toBeDefined();
+
+  expect(responseBody.dependencies.database.opened_connections).toEqual(1);
+  expect(responseBody.dependencies.database.version).toEqual("16.0");
+  const parseUpdateAt = new Date(responseBody.update_at).toISOString();
+  expect(responseBody.update_at).toEqual(parseUpdateAt);
 });
+
+
